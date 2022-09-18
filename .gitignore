@@ -1,0 +1,9 @@
+/.idea/
+/venv/
+/dist/
+/image_colorizer.egg-info/
+/models/
+/*.prototxt
+/*.caffemodel
+/*.npy
+/build/
