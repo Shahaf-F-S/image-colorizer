@@ -7,3 +7,4 @@
 /*.caffemodel
 /*.npy
 /build/
+/image_colorizer/models/colorization.caffemodel
