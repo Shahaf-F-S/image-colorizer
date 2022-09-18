@@ -12,10 +12,10 @@ The program includes a module to use dynamically to colorize black and white ima
   Shahaf Frank-Shapir
 
 - program version:
-  1.4.2
+  1.7.3
 
 - programming language:
-  python 3.8.6 (100%)
+  python 3.9.12 (100%)
 
 before we start
 ---------------
@@ -46,13 +46,4 @@ pip install opencv-python==4.5.3.56
   writen in a file, and write the following line in the project directory:
 ````
 pip install -r requirements.txt
-````
-
-run the app
------------
-
-#### run from windows command line (inside the project directory)
-- run with python (3.6.0 or higher) by writing to the command line in the project directory:
-````
-python object_detection/test.py
 ````

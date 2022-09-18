@@ -1,31 +1,25 @@
 # setup.py
 
-from setuptools import setup  # imports the setup function
+from setuptools import setup
 
 def main() -> None:
-    # this function is the main function to run the setup of the package
+    """Runs the program to distribute the package."""
 
-    name = 'image-colorizer'  # defines the package name
-    version = '1.0.2'  # defines the package version
-    license = 'MIT'  # defines the license type
-    author = "Shahaf Frank-Shapir"  # defines the author name
-    author_email = 'shahaffrs@gmail.com'  # defines the author email
-    # defines the package description
+    name = 'image-colorizer'
+    version = '1.7.3'
+    license = 'MIT'
+    author = "Shahaf Frank-Shapir"
+    author_email = 'shahaffrs@gmail.com'
     description = "A program that colorizes black and white images,\n" \
                   "using an AI model of Artificial Neural Network.\n"
-    long_description = open('README.txt', "r").read()  # defines the package long description
-    url = 'https://github.com/Shahaf-F-S/image-colorizer'  # defines the creator url
+    long_description = open('README.txt', "r").read()
+    url = 'https://github.com/Shahaf-F-S/image-colorizer'
 
-    packages = ['image_colorizer']  # defines the modules list for the package
-    # defines the required packages list to install for the package
-    install_requires = [
-        "opencv-python==4.5.3.56"
-    ]
+    packages = ['image_colorizer']
+    install_requires = ["opencv-python==4.5.3.56"]
 
-    # defines the additional files to include in the package
-    package_data = {"image_colorizer": ['models/*.*']}
+    package_data = {"image_colorizer": ['models/*.*', 'assets/icon/*.*']}
 
-    # calls the function to create the package from the project
     setup(
         name=name, version=version, description=description, license=license,
         packages=packages, author=author, author_email=author_email,
@@ -34,7 +28,6 @@ def main() -> None:
     )
 # end main
 
-if __name__ == "__main__":  # if the file is executed:
-    # runs the section when the file is executed
-    main()  # calls the main function to run the setup
+if __name__ == "__main__":
+    main()
 # end if
