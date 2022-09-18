@@ -82,8 +82,10 @@ def build_model() -> ModelsLocator:
     ) + "/models"
 
     venv = (
-            os.environ['VIRTUAL_ENV'].split('\\')[-1] +
-            "/Lib/site-packages/image_colorizer/models"
+        os.environ['VIRTUAL_ENV'].split('\\')[-1] +
+        f"/Lib/site-packages/"
+        f"{os.path.split(os.path.dirname(os.path.abspath(__file__)))[-1]}"
+        f"/models"
     )
 
     if not os.path.exists(venv):
