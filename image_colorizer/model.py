@@ -64,7 +64,7 @@ def join(data: List[bytes]) -> bytes:
 class ModelsLocator:
     """A class to represent a model locator."""
 
-    def __init__(self, model: str, prototext: str, kernel: str):
+    def __init__(self, model: str, prototext: str, kernel: str) -> None:
         """
         Defines the class attributes.
 
@@ -163,11 +163,30 @@ def create_model() -> cv2.dnn.readNetFromCaffe:
 # end create_model
 
 class Colorizer:
-    """An image colorization class"""
+    """
+    A class to represent an image colorization model.
+
+    The instances of this class are objects for black-and-white images colorization.
+    Automatically accelerated with GPU connected, the colorization process
+    is generally quick, as well as on a CPU.
+
+    In the colorization process the instance uses a deep Neural Network,
+    trained to colorize black-and-white images.
+
+    The constractor parameters:
+
+    - image:
+        A path to an image file, or a numpy array of the image to colorize.
+
+    >>> from image_colorizer import Colorizer
+    >>>
+    >>> colorizer = Colorizer("<PATH TO B&W IMAGE>")
+    >>> colorizer.save_colorized_image("<PATH TO COLORIZED IMAGE>")
+    """
 
     model = None
 
-    def __init__(self, image: Union[np.array, str]):
+    def __init__(self, image: Union[np.array, str]) -> None:
         """
         Processes the image input as a file path or an image array
 
@@ -257,7 +276,8 @@ class Colorizer:
     # end _display_image
 
     def display_org_image(
-            self, interval: Optional[int] = 0, title: Optional[str] = "original image"
+            self, interval: Optional[int] = 0,
+            title: Optional[str] = "original image"
     ) -> None:
         """
         Displays the given image.
@@ -272,7 +292,8 @@ class Colorizer:
     # end display_image
 
     def display_colorized_image(
-            self, interval: Optional[int] = 0, title: Optional[str] = "colorized image"
+            self, interval: Optional[int] = 0,
+            title: Optional[str] = "colorized image"
     ) -> None:
         """
         Displays the given image.
