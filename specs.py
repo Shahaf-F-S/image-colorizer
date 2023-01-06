@@ -461,9 +461,9 @@ class ProjectInspection:
         self.total_comment_lines_count = sum(self.comment_lines_counters.values())
         self.total_content_lines_count = sum(self.content_lines_counters.values())
         self.total_lines_count = (
-                self.total_code_lines_count +
-                self.total_comment_lines_count +
-                self.total_content_lines_count
+            self.total_code_lines_count +
+            self.total_comment_lines_count +
+            self.total_content_lines_count
         )
     # end process
 # end ProjectInspection
@@ -585,7 +585,7 @@ def main() -> None:
     """Runs the inspection of the package."""
 
     project_specs(
-        location="va", excluded_names=["__pycache__"],
+        location="image_colorizer", excluded_names=["__pycache__"],
         excluded_extensions=[".pyc"], code_file_extensions=[".py"],
         content_file_extensions=[], save=True
     )
