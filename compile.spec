@@ -8,7 +8,9 @@ a = Analysis(
     ['image_colorizer\\__main__.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[
+        ('image_colorizer\\source', 'image_colorizer\\source')
+    ],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -37,7 +39,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='image_colorizer\\assets\\icon\\icon.ico',
+    icon='image_colorizer\\source\\assets\\icon\\icon.ico',
 )
 coll = COLLECT(
     exe,
