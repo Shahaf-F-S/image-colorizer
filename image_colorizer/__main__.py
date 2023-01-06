@@ -7,6 +7,10 @@ from image_colorizer import Colorizer
 
 windll.shcore.SetProcessDpiAwareness(True)
 
+__all__ = [
+    "main"
+]
+
 def main() -> None:
     """Runs the program to visualize in an image a model."""
 
@@ -46,7 +50,7 @@ def main() -> None:
     # end if
 
     if args.display_colorized_img:
-        colorizer.display_org_image()
+        colorizer.display_colorized_image()
     # end if
 
     if args.save_org_img:
