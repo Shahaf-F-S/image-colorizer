@@ -7,4 +7,8 @@
 /*.caffemodel
 /*.npy
 /build/
-/image_colorizer/models/colorization.caffemodel
+/image_colorizer/source/models/colorization.caffemodel
+/colorized_lion.jpg
+/docs/
+/MANIFEST.in
+/pyproject.toml

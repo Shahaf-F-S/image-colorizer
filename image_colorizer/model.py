@@ -7,6 +7,15 @@ import os
 import cv2
 import numpy as np
 
+from image_colorizer.base import models
+
+__all__ = [
+    "ModelsLocator",
+    "build_model",
+    "load_model",
+    "Colorizer"
+]
+
 def split(data: bytes, fractions: int) -> List[bytes]:
     """
     Splits the data into different parts.
@@ -70,40 +79,27 @@ class ModelsLocator:
     # end __init__
 # end ModelsLocator
 
-def build_model() -> ModelsLocator:
+def load_model() -> ModelsLocator:
     """
     Builds the models files.
 
     :returns: The model locator object.
     """
 
-    working_directory = "/".join(
-        os.path.split(os.path.dirname(os.path.abspath(__file__)))
-    ) + "/models"
+    root = models()
 
-    venv = (
-        os.environ['VIRTUAL_ENV'].split('\\')[-1] +
-        f"/Lib/site-packages/"
-        f"{os.path.split(os.path.dirname(os.path.abspath(__file__)))[-1]}"
-        f"/models"
-    )
-
-    if not os.path.exists(venv):
-        venv = working_directory
-    # end if
-
-    model_path = f"{venv}/colorization.caffemodel"
+    model_path = f"{root}/colorization.caffemodel"
 
     if not os.path.exists(model_path):
         payload = []
 
-        for i in range(len(os.listdir(f"{venv}/caffemodel"))):
-            with open(f"{venv}/caffemodel/{i}.weight", "rb") as file:
+        for i in range(len(os.listdir(f"{root}/caffemodel"))):
+            with open(f"{root}/caffemodel/{i}.weight", "rb") as file:
                 payload.append(file.read())
             # end open
         # end for
 
-        with open(f"{venv}/colorization.caffemodel", "wb") as file:
+        with open(f"{root}/colorization.caffemodel", "wb") as file:
             file.write(join(payload))
         # end open
     # end if
@@ -113,7 +109,7 @@ def build_model() -> ModelsLocator:
     )[0] + "/models"
 
     if not os.path.exists(working_directory):
-        shutil.copytree(venv, working_directory)
+        shutil.copytree(root, working_directory)
         shutil.rmtree(f"{working_directory}/caffemodel")
     # end if
 
@@ -128,9 +124,9 @@ def build_model() -> ModelsLocator:
         model=model_path, prototext=prototext_path,
         kernel=kernel_path
     )
-# end build_model
+# end load_model
 
-def load_model(locator: ModelsLocator) -> cv2.dnn.readNetFromCaffe:
+def build_model(locator: ModelsLocator) -> cv2.dnn.readNetFromCaffe:
     """
     Loads the network model.
 
@@ -154,12 +150,22 @@ def load_model(locator: ModelsLocator) -> cv2.dnn.readNetFromCaffe:
     ]
 
     return net
-# end load_model
+# end build_model
+
+def create_model() -> cv2.dnn.readNetFromCaffe:
+    """
+    Builds the network model.
+
+    :returns: The network model.
+    """
+
+    return build_model(load_model())
+# end create_model
 
 class Colorizer:
     """An image colorization class"""
 
-    net = load_model(build_model())
+    model = None
 
     def __init__(self, image: Union[np.array, str]):
         """
@@ -167,6 +173,10 @@ class Colorizer:
 
         :param image: The path to the image file or the image object
         """
+
+        if Colorizer.model is None:
+            Colorizer.model = create_model()
+        # end if
 
         self.colorized_img = None
 
@@ -185,9 +195,9 @@ class Colorizer:
         resized_img = cv2.resize(lab_img, (224, 224))
         light_img = cv2.split(resized_img)[0] - 50
 
-        self.net.setInput(cv2.dnn.blobFromImage(light_img))
+        self.model.setInput(cv2.dnn.blobFromImage(light_img))
 
-        ab = self.net.forward()[0, :, :, :].transpose((1, 2, 0))
+        ab = self.model.forward()[0, :, :, :].transpose((1, 2, 0))
         ab = cv2.resize(ab, (self.bw_img.shape[1], self.bw_img.shape[0]))
 
         light_img = cv2.split(lab_img)[0]
