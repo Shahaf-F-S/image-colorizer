@@ -194,7 +194,7 @@ def main(
     """
 
     generate_md(location, destination=destination, reload=reload)
-    generate_html(location, destination=destination, reload=reload, show=show)
+    # generate_html(location, destination=destination, reload=reload, show=show)
 # end main
 
 if __name__ == "__main__":
