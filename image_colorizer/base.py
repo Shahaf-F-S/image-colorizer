@@ -24,7 +24,9 @@ __all__ = [
     "validate_requirement",
     "retrieve_name",
     "documentation",
-    "document"
+    "document",
+    "virtualenv_interpreter_location",
+    "activate_virtualenv_command"
 ]
 
 def root() -> str:
@@ -130,9 +132,51 @@ def run_silent_command(command: str) -> None:
     )
 # end run_silent_command
 
+def virtualenv_interpreter_location(path: Optional[str] = None) -> str:
+    """
+    Returns the location of the interpreter in the venv.
+
+    :param path: The path to the venv.
+
+    :return: The location of the interpreter.
+    """
+
+    if path is None:
+        path = os.environ['VIRTUAL_ENV']
+    # end if
+
+    python_location = (
+            Path(path) / (Path('Scripts') if 'win' in sys.platform else Path('bin'))
+    )
+
+    return str(python_location)
+# end activate_virtualenv_command
+
+def activate_virtualenv_command(path: Optional[str] = None) -> str:
+    """
+    Returns the command to activate the virtual env.
+
+    :param path: The path to the venv.
+
+    :return: The command to activate the venv.
+    """
+
+    if path is None:
+        path = os.environ['VIRTUAL_ENV']
+    # end if
+
+    python_startup = (
+            virtualenv_interpreter_location(path=path) / Path('activate')
+    )
+
+    return (
+        f"{'' if 'win' in sys.platform else 'source '}"
+        f"{python_startup}"
+    )
+# end activate_virtualenv_command
+
 def validate_requirement(
-        name: str, path: Optional[str] = None,
-        version: Optional[str] = None,
+        name: str, path: Optional[str] = None, version: Optional[str] = None,
         quiet: Optional[bool] = True
 ) -> None:
     """
@@ -167,20 +211,9 @@ def validate_requirement(
             arguments.append("--quiet")
         # end if
 
-        python_location = (
-            Path(os.environ['VIRTUAL_ENV']) /
-            (Path('Scripts') if 'win' in sys.platform else Path('bin'))
-        )
-        python_startup = (
-            python_location / Path('activate')
-        )
-        python_script = (
-            python_location / Path('python')
-        )
-
         command = (
-            f"{python_startup} && "
-            f"{python_script} -m pip "
+            f"{activate_virtualenv_command()} && "
+            f"{Path(virtualenv_interpreter_location()) / Path('python')} -m pip "
             f"{' '.join(arguments)}"
         )
 
