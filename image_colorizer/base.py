@@ -132,41 +132,25 @@ def run_silent_command(command: str) -> None:
     )
 # end run_silent_command
 
-def virtualenv_interpreter_location(path: Optional[str] = None) -> str:
+def virtualenv_interpreter_location() -> str:
     """
     Returns the location of the interpreter in the venv.
-
-    :param path: The path to the venv.
 
     :return: The location of the interpreter.
     """
 
-    if path is None:
-        path = os.environ['VIRTUAL_ENV']
-    # end if
-
-    python_location = (
-            Path(path) / (Path('Scripts') if 'win' in sys.platform else Path('bin'))
-    )
-
-    return str(python_location)
+    return os.path.split(sys.executable)[0]
 # end activate_virtualenv_command
 
-def activate_virtualenv_command(path: Optional[str] = None) -> str:
+def activate_virtualenv_command() -> str:
     """
     Returns the command to activate the virtual env.
-
-    :param path: The path to the venv.
 
     :return: The command to activate the venv.
     """
 
-    if path is None:
-        path = os.environ['VIRTUAL_ENV']
-    # end if
-
     python_startup = (
-            virtualenv_interpreter_location(path=path) / Path('activate')
+        virtualenv_interpreter_location() / Path('activate')
     )
 
     return (

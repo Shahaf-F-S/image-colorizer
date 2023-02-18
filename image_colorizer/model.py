@@ -257,10 +257,12 @@ class Colorizer:
         # end if
 
         return self.colorized_img
-    # end configure_image
+    # end configure_colorized_image
 
     def display_image(
-            self, image: np.array, interval: Optional[int] = 0,
+            self,
+            image: np.array,
+            interval: Optional[int] = 0,
             title: Optional[str] = "image"
     ) -> None:
         """
@@ -273,10 +275,11 @@ class Colorizer:
 
         cv2.imshow(title, self.configure_image(image))
         cv2.waitKey(interval)
-    # end _display_image
+    # end display_image
 
-    def display_org_image(
-            self, interval: Optional[int] = 0,
+    def display_original_image(
+            self,
+            interval: Optional[int] = 0,
             title: Optional[str] = "original image"
     ) -> None:
         """
@@ -289,10 +292,11 @@ class Colorizer:
         self.display_image(
             image=self.bw_img, interval=interval, title=title
         )
-    # end display_image
+    # end display_original_image
 
     def display_colorized_image(
-            self, interval: Optional[int] = 0,
+            self,
+            interval: Optional[int] = 0,
             title: Optional[str] = "colorized image"
     ) -> None:
         """
@@ -310,36 +314,36 @@ class Colorizer:
     # end display_colorized_image
 
     @staticmethod
-    def save_image(image: np.array, saving_path: str) -> None:
+    def save_image(image: np.array, path: str) -> None:
         """
         Saves the given image object into a file by the file path
 
         :param image: The image object ot display.
-        :param saving_path: The file path to save the image in.
+        :param path: The file path to save the image in.
         """
 
-        cv2.imwrite(saving_path, image)
+        cv2.imwrite(path, image)
     # end save_image
 
-    def save_org_image(self, saving_path: str) -> None:
+    def save_original_image(self, path: str) -> None:
         """
         Saves the given image object into a file by the file path
 
-        :param saving_path: The file path to save the image in.
+        :param path: The file path to save the image in.
         """
 
-        cv2.imwrite(saving_path, self.bw_img)
-    # end save_image
+        cv2.imwrite(path, self.bw_img)
+    # end save_original_image
 
-    def save_colorized_image(self, saving_path: str) -> None:
+    def save_colorized_image(self, path: str) -> None:
         """
         Saves the given image object into a file by the file path
 
-        :param saving_path: The file path to save the image in.
+        :param path: The file path to save the image in.
         """
 
         self.configure_colorized_image()
 
-        cv2.imwrite(saving_path, self.colorized_img)
-    # end save_image
+        cv2.imwrite(path, self.colorized_img)
+    # end save_colorized_image
 # end Colorizer

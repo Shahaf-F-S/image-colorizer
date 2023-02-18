@@ -46,7 +46,7 @@ def main() -> None:
     colorizer.colorize_image()
 
     if args.display_org_img:
-        colorizer.display_org_image()
+        colorizer.display_original_image()
     # end if
 
     if args.display_colorized_img:
@@ -54,7 +54,7 @@ def main() -> None:
     # end if
 
     if args.save_org_img:
-        colorizer.save_org_image(args.save_org_img)
+        colorizer.save_original_image(args.save_org_img)
     # end if
 
     if args.save_colorized_img:
