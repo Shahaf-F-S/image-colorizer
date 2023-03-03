@@ -1,7 +1,5 @@
 # save.py
 
-import threading
-
 from image_colorizer.base import suppress, run_silent_command
 
 from specs import main as specs
@@ -16,11 +14,9 @@ def main() -> None:
     ]
 
     for command in commands:
-        thread = threading.Thread(target=command)
-
         with suppress():
-            thread.start()
-        # end executor
+            command()
+        # end suppress
     # end for
 # end main
 

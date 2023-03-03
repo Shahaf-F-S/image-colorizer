@@ -150,7 +150,8 @@ def activate_virtualenv_command() -> str:
     """
 
     python_startup = (
-        virtualenv_interpreter_location() / Path('activate')
+        virtualenv_interpreter_location() /
+        Path('activate')
     )
 
     return (
@@ -160,8 +161,11 @@ def activate_virtualenv_command() -> str:
 # end activate_virtualenv_command
 
 def validate_requirement(
-        name: str, path: Optional[str] = None, version: Optional[str] = None,
-        quiet: Optional[bool] = True
+        name: str,
+        path: Optional[str] = None,
+        version: Optional[str] = None,
+        quiet: Optional[bool] = True,
+        silence: Optional[bool] = False
 ) -> None:
     """
     Installs the required package.
@@ -170,6 +174,7 @@ def validate_requirement(
     :param path: The path to the package.
     :param version: The version to install.
     :param quiet: The value to show the installation process.
+    :param silence: The value to silence.
     """
 
     if version is None:
@@ -201,9 +206,14 @@ def validate_requirement(
             f"{' '.join(arguments)}"
         )
 
-        with suppress():
+        if silence:
+            with suppress():
+                os.system(command)
+            # end suppress
+
+        else:
             os.system(command)
-        # end suppress
+        # end if
 
         try:
             importlib.import_module(name)
