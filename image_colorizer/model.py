@@ -7,6 +7,8 @@ import os
 import cv2
 import numpy as np
 
+from represent import BaseModel
+
 from image_colorizer.base import models
 
 __all__ = [
@@ -61,7 +63,7 @@ def join(data: List[bytes]) -> bytes:
     return payload
 # end join
 
-class ModelsLocator:
+class ModelsLocator(BaseModel):
     """A class to represent a model locator."""
 
     def __init__(self, model: str, prototext: str, kernel: str) -> None:
@@ -162,7 +164,7 @@ def create_model() -> cv2.dnn.readNetFromCaffe:
     return build_model(load_model())
 # end create_model
 
-class Colorizer:
+class Colorizer(BaseModel):
     """
     A class to represent an image colorization model.
 

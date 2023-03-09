@@ -24,6 +24,7 @@ def main() -> None:
         ],
         include=[
             "image_colorizer/source/assets/",
+            "image_colorizer/source/dependencies/",
             "image_colorizer/source/models/caffemodel",
             "image_colorizer/source/models/colorization.prototxt",
             "image_colorizer/source/models/points.npy",

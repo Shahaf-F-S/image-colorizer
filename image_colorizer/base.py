@@ -26,7 +26,8 @@ __all__ = [
     "documentation",
     "document",
     "virtualenv_interpreter_location",
-    "activate_virtualenv_command"
+    "activate_virtualenv_command",
+    "dependencies"
 ]
 
 def root() -> str:
@@ -84,6 +85,16 @@ def assets() -> str:
 
     return str(Path(source()) / Path("assets"))
 # end assets
+
+def dependencies() -> str:
+    """
+    Returns the root of the source program.
+
+    :return: The path to the source.
+    """
+
+    return str(Path(source()) / Path("dependencies"))
+# end dependencies
 
 def terminate_thread(thread: threading.Thread) -> None:
     """
