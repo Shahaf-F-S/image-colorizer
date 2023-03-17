@@ -44,6 +44,7 @@ def main() -> None:
         author="Shahaf Frank-Shapir",
         author_email='shahaffrs@gmail.com',
         url='https://github.com/Shahaf-F-S/image-colorizer',
+        long_description_content_type="text/markdown",
         classifiers=[
             "Intended Audience :: Developers",
             "License :: OSI Approved :: MIT License",

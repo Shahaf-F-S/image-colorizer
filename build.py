@@ -84,9 +84,27 @@ def parse_requirements(
                     name = name[:name.find(char)] if char in name else name
                 # end for
 
-                if (i == 1) and (part in ("--extra-index-url", "--index-url", "--find-links")):
-                    links.append(f"{parts[2]}#egg={name}")
-                    requirements.append(";".join([parts[0]] + requirement[1:]))
+                if name in excluded:
+                    continue
+                # end if
+
+                if (
+                    (len(parts) > 2) and
+                    (part in ("--extra-index-url", "--index-url", "--find-links"))
+                ):
+                    if i == 0:
+                        name = parts[-1]
+
+                    else:
+                        name = parts[0]
+                    # end if
+
+                    if name in excluded:
+                        continue
+                    # end if
+
+                    links.append(f"{parts[1]}#egg={name}")
+                    requirements.append(";".join([name] + requirement[1:]))
 
                     break
                 # end if
@@ -231,7 +249,8 @@ def build_pyproject(
                             'author',
                             'packages',
                             'author_email',
-                            "data_files"
+                            "data_files",
+                            "long_description_content_type"
                         )
                     )
                 )
