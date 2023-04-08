@@ -1,11 +1,8 @@
 # main.py
 
 import argparse
-from ctypes import windll
 
 from image_colorizer import Colorizer
-
-windll.shcore.SetProcessDpiAwareness(True)
 
 __all__ = [
     "main"
