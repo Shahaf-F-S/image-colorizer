@@ -2,6 +2,7 @@
 
 import datetime as dt
 import shutil
+from dataclasses import dataclass
 from typing import Optional, List, Union
 import os
 
@@ -64,22 +65,13 @@ def join(data: List[bytes]) -> bytes:
     return payload
 # end join
 
+@dataclass(repr=False, slots=True)
 class ModelsLocator(BaseModel):
     """A class to represent a model locator."""
 
-    def __init__(self, model: str, prototext: str, kernel: str) -> None:
-        """
-        Defines the class attributes.
-
-        :param model: The model path.
-        :param prototext: The prototext path.
-        :param kernel: The kernel path.
-        """
-
-        self.model = model
-        self.prototext = prototext
-        self.kernel = kernel
-    # end __init__
+    model: str
+    prototext: str
+    kernel: str
 # end ModelsLocator
 
 def load_model() -> ModelsLocator:

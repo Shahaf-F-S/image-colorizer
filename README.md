@@ -1,33 +1,16 @@
 # image-colorizer
+
 > A program that colorizes black and white images, using an AI model of Artificial Neural Network.
 > The program includes a module to use dynamically to colorize black and white images.
 
 first of all
 ------------
 
-#### Hi there, I'm Shahaf Frank-Shapir
-
-Just a bit about me...
-
-- I just launched my complete python application for stock prediction, sentiment analysis and trading advisor!
-- I’m currently learning biology, software engineering and systems engineering.
-- I’m looking to collaborate with other content topics.
-- 2021 Goals: Contribute more to privet projects.
-- Fun fact: I love to draw and paint, sculpt, program (of course) play the piano and make origami.
-
 #### credits:
 
-- writen and owned by:
-  Shahaf Frank-Shapir
-
-- all the rights are saved for:
-  Shahaf Frank-Shapir
-
-- program version:
-  1.7.3
-
-- programming language:
-  python 3.9.12 (100%)
+- writen and owned by: Shahaf Frank-Shapir
+- all the rights are saved for: Shahaf Frank-Shapir
+- programming language: python 3.9.12 (100%)
 
 before we start
 ---------------
