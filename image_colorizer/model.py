@@ -1,5 +1,6 @@
 # model.py
 
+import datetime as dt
 import shutil
 from typing import Optional, List, Union
 import os
@@ -188,6 +189,8 @@ class Colorizer(BaseModel):
 
     model = None
 
+    DELAY = 0
+
     def __init__(self, image: Union[np.array, str]) -> None:
         """
         Processes the image input as a file path or an image array
@@ -202,6 +205,8 @@ class Colorizer(BaseModel):
         self.colorized_img = None
 
         self.bw_img = self.configure_image(image)
+
+        self.delay = self.DELAY
     # end __init__
 
     def colorize_image(self) -> np.array:
@@ -247,6 +252,22 @@ class Colorizer(BaseModel):
         # end if
     # end configure_image
 
+    @staticmethod
+    def save_image(image: np.array, path: str) -> None:
+        """
+        Saves the given image object into a file by the file path
+
+        :param path: The file path to save the image in.
+        :param image: The path to the image file or the image object
+        """
+
+        if location := os.path.split(path)[0]:
+            os.makedirs(location, exist_ok=True)
+        # end if
+
+        cv2.imwrite(path, image)
+    # end save_image
+
     def configure_colorized_image(self) -> np.array:
         """
         Configures the colorized image existing state.
@@ -264,68 +285,66 @@ class Colorizer(BaseModel):
     def display_image(
             self,
             image: np.array,
-            interval: Optional[int] = 0,
+            delay: Optional[Union[int, float, dt.timedelta]] = None,
             title: Optional[str] = "image"
     ) -> None:
         """
         Displays the given image.
 
         :param image: The image object ot display.
-        :param interval: The amount of seconds to show the window.
+        :param delay: The amount of seconds to show the window.
         :param title: The title of the image window.
         """
 
+        if delay is None:
+            delay = self.delay
+        # end if
+
+        if isinstance(delay, dt.timedelta):
+            delay = delay.total_seconds()
+        # end if
+
         cv2.imshow(title, self.configure_image(image))
-        cv2.waitKey(interval)
+        cv2.waitKey(delay * 1000)
     # end display_image
 
     def display_original_image(
             self,
-            interval: Optional[int] = 0,
+            delay: Optional[Union[int, float, dt.timedelta]] = None,
             title: Optional[str] = "original image"
     ) -> None:
         """
         Displays the given image.
 
-        :param interval: The amount of seconds to show the window.
+        :param delay: The amount of seconds to show the window.
         :param title: The title of the image window.
         """
 
         self.display_image(
-            image=self.bw_img, interval=interval, title=title
+            image=self.bw_img,
+            delay=delay or self.delay, title=title
         )
     # end display_original_image
 
     def display_colorized_image(
             self,
-            interval: Optional[int] = 0,
+            delay: Optional[Union[int, float, dt.timedelta]] = None,
             title: Optional[str] = "colorized image"
     ) -> None:
         """
         Displays the given image.
 
-        :param interval: The amount of seconds to show the window.
+        :param delay: The amount of seconds to show the window.
         :param title: The title of the image window.
         """
 
         self.configure_colorized_image()
 
         self.display_image(
-            image=self.colorized_img, interval=interval, title=title
+            image=self.colorized_img,
+            delay=delay or self.delay, title=title
         )
     # end display_colorized_image
-
-    @staticmethod
-    def save_image(image: np.array, path: str) -> None:
-        """
-        Saves the given image object into a file by the file path
-
-        :param image: The image object ot display.
-        :param path: The file path to save the image in.
-        """
-
-        cv2.imwrite(path, image)
-    # end save_image
 
     def save_original_image(self, path: str) -> None:
         """
@@ -334,7 +353,7 @@ class Colorizer(BaseModel):
         :param path: The file path to save the image in.
         """
 
-        cv2.imwrite(path, self.bw_img)
+        self.save_image(image=self.bw_img, path=path)
     # end save_original_image
 
     def save_colorized_image(self, path: str) -> None:
@@ -346,6 +365,6 @@ class Colorizer(BaseModel):
 
         self.configure_colorized_image()
 
-        cv2.imwrite(path, self.colorized_img)
+        self.save_image(image=self.colorized_img, path=path)
     # end save_colorized_image
 # end Colorizer

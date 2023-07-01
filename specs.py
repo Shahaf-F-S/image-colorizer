@@ -19,8 +19,7 @@ __all__ = [
     "ProjectSpecs",
     "inspect_project",
     "project_tree",
-    "project_specs",
-    "main"
+    "project_specs"
 ]
 
 def read_file(path: str) -> str:
@@ -142,8 +141,8 @@ def collect_files(
     # end if
 
     if not any(
-            part in excluded_names
-            for part in Path(location).parts
+        part in excluded_names
+        for part in Path(location).parts
     ):
         for name in os.listdir(location):
             path = Path(location) / Path(name)
@@ -580,17 +579,3 @@ def project_specs(
 
     return inspection
 # end project_specs
-
-def main() -> None:
-    """Runs the inspection of the package."""
-
-    project_specs(
-        location="image_colorizer", excluded_names=["__pycache__"],
-        excluded_extensions=[".pyc"], code_file_extensions=[".py"],
-        content_file_extensions=[], save=True
-    )
-# end main
-
-if __name__ == "__main__":
-    main()
-# end if
