@@ -296,7 +296,7 @@ class Colorizer(BaseModel):
             delay = delay.total_seconds()
         # end if
 
-        cv2.imshow(title, self.configure_image(image))
+        cv2.imshow(title or "", self.configure_image(image))
         cv2.waitKey(delay * 1000)
     # end display_image
 
