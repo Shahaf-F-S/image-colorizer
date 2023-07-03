@@ -14,7 +14,7 @@ from represent import BaseModel
 from image_colorizer.base import models
 
 __all__ = [
-    "ModelsLocator",
+    "ModelsLocations",
     "build_model",
     "load_model",
     "Colorizer"
@@ -66,7 +66,7 @@ def join(data: List[bytes]) -> bytes:
 # end join
 
 @dataclass(repr=False, slots=True)
-class ModelsLocator(BaseModel):
+class ModelsLocations(BaseModel):
     """A class to represent a model locator."""
 
     model: str
@@ -74,7 +74,7 @@ class ModelsLocator(BaseModel):
     kernel: str
 # end ModelsLocator
 
-def load_model() -> ModelsLocator:
+def load_model() -> ModelsLocations:
     """
     Builds the models files.
 
@@ -115,13 +115,13 @@ def load_model() -> ModelsLocator:
     prototext_path = os.path.relpath(prototext_path)
     model_path = os.path.relpath(model_path)
 
-    return ModelsLocator(
+    return ModelsLocations(
         model=model_path, prototext=prototext_path,
         kernel=kernel_path
     )
 # end load_model
 
-def build_model(locator: ModelsLocator) -> cv2.dnn.readNetFromCaffe:
+def build_model(locator: ModelsLocations) -> cv2.dnn.readNetFromCaffe:
     """
     Loads the network model.
 
