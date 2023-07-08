@@ -2,9 +2,10 @@
 
 import datetime as dt
 import shutil
-from dataclasses import dataclass
 from typing import Optional, List, Union
 import os
+
+from attrs import define
 
 import cv2
 import numpy as np
@@ -65,7 +66,7 @@ def join(data: List[bytes]) -> bytes:
     return payload
 # end join
 
-@dataclass(repr=False, slots=True)
+@define(repr=False)
 @represent
 class ModelsLocations:
     """A class to represent a model locator."""
@@ -185,6 +186,8 @@ class Colorizer:
 
     DELAY = 0
 
+    __slots__ = "image", "colorized_image", "bw_image", "delay"
+
     def __init__(self, image: Union[np.array, str]) -> None:
         """
         Processes the image input as a file path or an image array
@@ -196,9 +199,9 @@ class Colorizer:
             Colorizer.model = create_model()
         # end if
 
-        self.colorized_img = None
+        self.colorized_image = None
 
-        self.bw_img = self.configure_image(image)
+        self.bw_image = self.configure_image(image)
 
         self.delay = self.DELAY
     # end __init__
@@ -210,7 +213,7 @@ class Colorizer:
         :returns: The colorized image object.
         """
 
-        normalized_img = self.bw_img.astype("float32") / 255.0
+        normalized_img = self.bw_image.astype("float32") / 255.0
         lab_img = cv2.cvtColor(normalized_img, cv2.COLOR_BGR2LAB)
         resized_img = cv2.resize(lab_img, (224, 224))
         light_img = cv2.split(resized_img)[0] - 50
@@ -218,16 +221,16 @@ class Colorizer:
         self.model.setInput(cv2.dnn.blobFromImage(light_img))
 
         ab = self.model.forward()[0, :, :, :].transpose((1, 2, 0))
-        ab = cv2.resize(ab, (self.bw_img.shape[1], self.bw_img.shape[0]))
+        ab = cv2.resize(ab, (self.bw_image.shape[1], self.bw_image.shape[0]))
 
         light_img = cv2.split(lab_img)[0]
 
         colorized_img = np.concatenate((light_img[:, :, np.newaxis], ab), axis=2)
         colorized_img = cv2.cvtColor(colorized_img, cv2.COLOR_LAB2BGR)
 
-        self.colorized_img = (255 * colorized_img).astype("uint8")
+        self.colorized_image = (255 * colorized_img).astype("uint8")
 
-        return self.colorized_img
+        return self.colorized_image
     # end colorize_image
 
     @staticmethod
@@ -269,11 +272,11 @@ class Colorizer:
         :returns: The colorized image array.
         """
 
-        if self.colorized_img is None:
-            self.colorized_img = self.colorize_image()
+        if self.colorized_image is None:
+            self.colorized_image = self.colorize_image()
         # end if
 
-        return self.colorized_img
+        return self.colorized_image
     # end configure_colorized_image
 
     def display_image(
@@ -315,7 +318,7 @@ class Colorizer:
         """
 
         self.display_image(
-            image=self.bw_img,
+            image=self.bw_image,
             delay=delay or self.delay, title=title
         )
     # end display_original_image
@@ -335,7 +338,7 @@ class Colorizer:
         self.configure_colorized_image()
 
         self.display_image(
-            image=self.colorized_img,
+            image=self.colorized_image,
             delay=delay or self.delay, title=title
         )
     # end display_colorized_image
@@ -347,7 +350,7 @@ class Colorizer:
         :param path: The file path to save the image in.
         """
 
-        self.save_image(image=self.bw_img, path=path)
+        self.save_image(image=self.bw_image, path=path)
     # end save_original_image
 
     def save_colorized_image(self, path: str) -> None:
@@ -359,6 +362,6 @@ class Colorizer:
 
         self.configure_colorized_image()
 
-        self.save_image(image=self.colorized_img, path=path)
+        self.save_image(image=self.colorized_image, path=path)
     # end save_colorized_image
 # end Colorizer
