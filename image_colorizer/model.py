@@ -2,15 +2,11 @@
 
 import datetime as dt
 import shutil
-from typing import Optional, List, Union
 import os
-
-from attrs import define
+from dataclasses import dataclass
 
 import cv2
 import numpy as np
-
-from represent import represent
 
 from image_colorizer.base import models
 
@@ -21,7 +17,7 @@ __all__ = [
     "Colorizer"
 ]
 
-def split(data: bytes, fractions: int) -> List[bytes]:
+def split(data: bytes, fractions: int) -> list[bytes]:
     """
     Splits the data into different parts.
 
@@ -43,38 +39,17 @@ def split(data: bytes, fractions: int) -> List[bytes]:
 
     if len(data) > 0:
         payload.append(data)
-    # end if
 
     return payload
 # end split
 
-def join(data: List[bytes]) -> bytes:
-    """
-    Joins the data fractions into one data fragment.
-
-    :param data: The data fractions to join.
-
-    :returns: The joined data.
-    """
-
-    payload = b''
-
-    for fraction in data:
-        payload += fraction
-    # end for
-
-    return payload
-# end join
-
-@define(repr=False)
-@represent
+@dataclass(slots=True)
 class ModelsLocations:
     """A class to represent a model locator."""
 
     model: str
     prototext: str
     kernel: str
-# end ModelsLocator
 
 def load_model() -> ModelsLocations:
     """
@@ -93,13 +68,9 @@ def load_model() -> ModelsLocations:
         for i in range(len(os.listdir(f"{root}/caffemodel"))):
             with open(f"{root}/caffemodel/{i}.weight", "rb") as file:
                 payload.append(file.read())
-            # end open
-        # end for
 
         with open(f"{root}/colorization.caffemodel", "wb") as file:
-            file.write(join(payload))
-        # end open
-    # end if
+            file.write(b''.join(payload))
 
     working_directory = os.path.split(
         os.path.dirname(os.path.abspath(__file__))
@@ -108,7 +79,6 @@ def load_model() -> ModelsLocations:
     if not os.path.exists(working_directory):
         shutil.copytree(root, working_directory)
         shutil.rmtree(f"{working_directory}/caffemodel")
-    # end if
 
     prototext_path = f"{working_directory}/colorization.prototxt"
     model_path = f"{working_directory}/colorization.caffemodel"
@@ -121,7 +91,6 @@ def load_model() -> ModelsLocations:
         model=model_path, prototext=prototext_path,
         kernel=kernel_path
     )
-# end load_model
 
 def build_model(locator: ModelsLocations) -> cv2.dnn.readNetFromCaffe:
     """
@@ -147,7 +116,6 @@ def build_model(locator: ModelsLocations) -> cv2.dnn.readNetFromCaffe:
     ]
 
     return net
-# end build_model
 
 def create_model() -> cv2.dnn.readNetFromCaffe:
     """
@@ -157,9 +125,7 @@ def create_model() -> cv2.dnn.readNetFromCaffe:
     """
 
     return build_model(load_model())
-# end create_model
 
-@represent
 class Colorizer:
     """
     A class to represent an image colorization model.
@@ -188,7 +154,7 @@ class Colorizer:
 
     __slots__ = "image", "colorized_image", "bw_image", "delay"
 
-    def __init__(self, image: Union[np.array, str]) -> None:
+    def __init__(self, image: np.array | str) -> None:
         """
         Processes the image input as a file path or an image array
 
@@ -197,14 +163,12 @@ class Colorizer:
 
         if Colorizer.model is None:
             Colorizer.model = create_model()
-        # end if
 
         self.colorized_image = None
 
         self.bw_image = self.configure_image(image)
 
         self.delay = self.DELAY
-    # end __init__
 
     def colorize_image(self) -> np.array:
         """
@@ -231,10 +195,9 @@ class Colorizer:
         self.colorized_image = (255 * colorized_img).astype("uint8")
 
         return self.colorized_image
-    # end colorize_image
 
     @staticmethod
-    def configure_image(image: Union[np.array, str]) -> np.array:
+    def configure_image(image: np.array | str) -> np.array:
         """
         Processes the image input as a file path or an image array
 
@@ -246,8 +209,6 @@ class Colorizer:
 
         elif isinstance(image, np.ndarray):
             return image
-        # end if
-    # end configure_image
 
     @staticmethod
     def save_image(image: np.array, path: str) -> None:
@@ -260,10 +221,8 @@ class Colorizer:
 
         if location := os.path.split(path)[0]:
             os.makedirs(location, exist_ok=True)
-        # end if
 
         cv2.imwrite(path, image)
-    # end save_image
 
     def configure_colorized_image(self) -> np.array:
         """
@@ -274,16 +233,14 @@ class Colorizer:
 
         if self.colorized_image is None:
             self.colorized_image = self.colorize_image()
-        # end if
 
         return self.colorized_image
-    # end configure_colorized_image
 
     def display_image(
             self,
             image: np.array,
-            delay: Optional[Union[int, float, dt.timedelta]] = None,
-            title: Optional[str] = "image"
+            delay: int | float | dt.timedelta = None,
+            title: str = "image"
     ) -> None:
         """
         Displays the given image.
@@ -295,20 +252,17 @@ class Colorizer:
 
         if delay is None:
             delay = self.delay
-        # end if
 
         if isinstance(delay, dt.timedelta):
             delay = delay.total_seconds()
-        # end if
 
         cv2.imshow(title or "", self.configure_image(image))
         cv2.waitKey(delay * 1000)
-    # end display_image
 
     def display_original_image(
             self,
-            delay: Optional[Union[int, float, dt.timedelta]] = None,
-            title: Optional[str] = "original image"
+            delay: int | float | dt.timedelta = None,
+            title: str = "original image"
     ) -> None:
         """
         Displays the given image.
@@ -321,12 +275,11 @@ class Colorizer:
             image=self.bw_image,
             delay=delay or self.delay, title=title
         )
-    # end display_original_image
 
     def display_colorized_image(
             self,
-            delay: Optional[Union[int, float, dt.timedelta]] = None,
-            title: Optional[str] = "colorized image"
+            delay: int | float | dt.timedelta = None,
+            title: str = "colorized image"
     ) -> None:
         """
         Displays the given image.
@@ -336,12 +289,10 @@ class Colorizer:
         """
 
         self.configure_colorized_image()
-
         self.display_image(
             image=self.colorized_image,
             delay=delay or self.delay, title=title
         )
-    # end display_colorized_image
 
     def save_original_image(self, path: str) -> None:
         """
@@ -351,7 +302,6 @@ class Colorizer:
         """
 
         self.save_image(image=self.bw_image, path=path)
-    # end save_original_image
 
     def save_colorized_image(self, path: str) -> None:
         """
@@ -363,5 +313,3 @@ class Colorizer:
         self.configure_colorized_image()
 
         self.save_image(image=self.colorized_image, path=path)
-    # end save_colorized_image
-# end Colorizer
