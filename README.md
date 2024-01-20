@@ -3,6 +3,8 @@
 > A program that colorizes black and white images, using an AI model of Artificial Neural Network.
 > The program includes a module to use dynamically to colorize black and white images.
 
+## example
+
 ```python
 from image_colorizer import Colorizer
 
