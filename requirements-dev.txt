@@ -1,4 +1,0 @@
-pytest
-pdoc3
-
-opencv-python
